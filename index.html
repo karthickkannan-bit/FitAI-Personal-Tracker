@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseFit Pro — Fitness & Workout Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+
+  <aside class="sidebar">
+    <div class="brand"><span class="logo">⚡</span><div><b>PulseFit</b><small>Pro Tracker</small></div></div>
+    <nav>
+      <a class="active" href="#dashboard">Dashboard</a><a href="#log">Log Workout</a><a href="#plans">AI Plans</a><a href="#goals">Goals</a><a href="#history">History</a>
+    </nav>
+    <div class="profile">
+      <div class="avatar">K</div><div><b>Build Club Demo</b><small>Ready to present</small></div>
+    </div>
+  </aside>
+
+  <main class="app">
+    <section class="hero" id="dashboard">
+      <div>
+        <p class="eyebrow">Next-level fitness command center</p>
+        <h1>Track workouts, crush goals, and visualize progress like a pro.</h1>
+        <p class="sub">A premium web app for logging training sessions, monitoring calories, streaks, weekly volume, goals, and performance insights.</p>
+        <div class="hero-actions"><a href="#log" class="btn primary">Start Tracking</a><button class="btn ghost" id="demoBtn">Load Demo Data</button></div>
+      </div>
+      <div class="hero-card tilt">
+        <div class="ring" id="progressRing"><span id="ringValue">0%</span></div>
+        <h3>Weekly Goal Progress</h3><p id="goalText">Log workouts to activate analytics</p>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat"><span>🔥</span><small>Calories Burned</small><b id="caloriesStat">0</b></article>
+      <article class="stat"><span>💪</span><small>Total Workouts</small><b id="workoutsStat">0</b></article>
+      <article class="stat"><span>⏱️</span><small>Minutes Trained</small><b id="minutesStat">0</b></article>
+      <article class="stat"><span>⚡</span><small>Current Streak</small><b id="streakStat">0 days</b></article>
+    </section>
+
+    <section class="panel-grid">
+      <div class="panel chart-panel"><div class="panel-head"><h2>Weekly Performance</h2><span>Live chart</span></div><canvas id="weeklyChart"></canvas></div>
+      <div class="panel chart-panel"><div class="panel-head"><h2>Workout Split</h2><span>Category view</span></div><canvas id="splitChart"></canvas></div>
+    </section>
+
+    <section class="workbench" id="log">
+      <div class="panel form-panel">
+        <div class="panel-head"><h2>Log New Workout</h2><span>Saved in browser</span></div>
+        <form id="workoutForm">
+          <div class="two"><label>Workout Type<select id="type"><option>Strength</option><option>Cardio</option><option>Yoga</option><option>HIIT</option><option>Sports</option></select></label><label>Date<input type="date" id="date"></label></div>
+          <div class="two"><label>Duration (min)<input type="number" id="duration" placeholder="45" required></label><label>Calories<input type="number" id="calories" placeholder="320" required></label></div>
+          <label>Workout Notes<input type="text" id="notes" placeholder="Push day, 5km run, leg workout..."></label>
+          <button class="btn primary full">Add Workout</button>
+        </form>
+      </div>
+      <div class="panel insight-card">
+        <h2>Smart Coach</h2><p id="coachText">Add workouts to get personalized feedback.</p>
+        <div class="mini-metrics"><div><b id="avgCal">0</b><small>Avg Calories</small></div><div><b id="avgMin">0</b><small>Avg Minutes</small></div></div>
+      </div>
+    </section>
+
+    <section class="panel plans" id="plans">
+      <div class="panel-head"><h2>AI-Style Workout Plans</h2><span>Choose your goal</span></div>
+      <div class="plan-grid">
+        <div class="plan"><b>Lean Builder</b><p>4-day strength + cardio blend for visible progress.</p><button onclick="applyPlan('Lean Builder')">Use Plan</button></div>
+        <div class="plan featured"><b>Fat Burn Sprint</b><p>HIIT-focused plan with calorie targets and streak goals.</p><button onclick="applyPlan('Fat Burn Sprint')">Use Plan</button></div>
+        <div class="plan"><b>Beginner Reset</b><p>Low pressure plan for consistency and habit building.</p><button onclick="applyPlan('Beginner Reset')">Use Plan</button></div>
+      </div>
+    </section>
+
+    <section class="workbench" id="goals">
+      <div class="panel form-panel"><div class="panel-head"><h2>Goal Manager</h2><span>Weekly target</span></div><label>Weekly Workout Goal<input id="goalInput" type="number" value="5"></label><button class="btn primary full" id="saveGoal">Save Goal</button></div>
+      <div class="panel achievement"><h2>Achievements</h2><div id="badges"></div></div>
+    </section>
+
+    <section class="panel history" id="history">
+      <div class="panel-head"><h2>Workout History</h2><input id="search" placeholder="Search workouts..."></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Duration</th><th>Calories</th><th>Notes</th><th></th></tr></thead><tbody id="historyBody"></tbody></table></div>
+      <div class="footer-actions"><button class="btn ghost" id="exportBtn">Export CSV</button><button class="btn danger" id="clearBtn">Clear All</button></div>
+    </section>
+  </main>
+
+
+  <div class="plan-modal" id="planModal" aria-hidden="true">
+    <div class="plan-modal-card">
+      <button class="modal-close" id="closePlan" aria-label="Close plan">×</button>
+      <div class="modal-kicker">AI WORKOUT PLAN</div>
+      <h2 id="modalPlanTitle">Plan Title</h2>
+      <p id="modalPlanDesc">Plan description</p>
+
+      <div class="modal-grid">
+        <div><small>Duration</small><b id="modalDuration">4 Weeks</b></div>
+        <div><small>Weekly Target</small><b id="modalTarget">5 Days</b></div>
+        <div><small>Difficulty</small><b id="modalDifficulty">Medium</b></div>
+      </div>
+
+      <h3>Weekly Schedule</h3>
+      <div id="modalSchedule" class="schedule-list"></div>
+
+      <h3>Coach Tips</h3>
+      <ul id="modalTips" class="tip-list"></ul>
+
+      <div class="modal-actions">
+        <button class="btn primary" id="activatePlanBtn">Activate This Plan</button>
+        <button class="btn ghost" id="copyPlanBtn">Copy Plan Text</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
